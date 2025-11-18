@@ -7,7 +7,7 @@ conn = psycopg2.connect(
     host="localhost",
     database="shopify",
     user="postgres",
-    password="mot_de_passe"
+    password="taraji" (fictif mot de passe)
 )
 cursor = conn.cursor()
 
