@@ -1,0 +1,145 @@
+# Vue automatique pour toujours utiliser la dernière table.
+# Table clients
+
+DO $$
+DECLARE
+    last_table text;
+BEGIN
+    # Récupère la dernière table clients.
+    SELECT table_name INTO last_table
+    FROM information_schema.tables
+    WHERE table_name LIKE 'clients_%'
+    ORDER BY table_name DESC
+    LIMIT 1;
+
+    #Information affichee
+
+    RAISE NOTICE 'Vue clients créée avec : %', last_table;
+
+    # Création de la vue.
+    EXECUTE format('
+        CREATE OR REPLACE VIEW vue_clients_clean AS
+        SELECT
+            customer_id,
+            first_name,
+            last_name,
+            email,
+            accepts_email_marketing,
+            default_address_company,
+            default_address_address1,
+            default_address_city,
+            default_address_zip,
+            tags
+        FROM %I;
+    ', last_table);
+END $$;
+
+
+#table produits
+
+DO $$
+DECLARE
+    last_table text;
+BEGIN
+    SELECT table_name INTO last_table
+    FROM information_schema.tables
+    WHERE table_name LIKE 'produits_%'
+    ORDER BY table_name DESC
+    LIMIT 1;
+
+    RAISE NOTICE 'Vue produits créée avec : %', last_table;
+
+    EXECUTE format('
+        CREATE OR REPLACE VIEW vue_produits_clean AS
+        SELECT
+            product_id,
+            title,
+            status,
+            stock,
+            category
+        FROM %I;
+    ', last_table);
+END $$;
+
+
+# Table finance
+
+DO $$
+DECLARE
+    last_table text;
+BEGIN
+    SELECT table_name INTO last_table
+    FROM information_schema.tables
+    WHERE table_name LIKE 'finance_%'
+    ORDER BY table_name DESC
+    LIMIT 1;
+
+    RAISE NOTICE 'Vue finance créée avec : %', last_table;
+
+    EXECUTE format('
+        CREATE OR REPLACE VIEW vue_finance_clean AS
+        SELECT
+            transaction_id,
+            customer_id,
+            amount,
+            method,
+            status,
+            created_at
+        FROM %I;
+    ', last_table);
+END $$;
+
+# table marketing
+
+DO $$
+DECLARE
+    last_table text;
+BEGIN
+    SELECT table_name INTO last_table
+    FROM information_schema.tables
+    WHERE table_name LIKE 'marketing_%'
+    ORDER BY table_name DESC
+    LIMIT 1;
+
+    RAISE NOTICE 'Vue marketing créée avec : %', last_table;
+
+    EXECUTE format('
+        CREATE OR REPLACE VIEW vue_marketing_clean AS
+        SELECT
+            campaign_id,
+            channel,
+            budget,
+            impressions,
+            clicks
+        FROM %I;
+    ', last_table);
+END $$;
+
+
+# Table reductions
+
+DO $$
+DECLARE
+    last_table text;
+BEGIN
+    SELECT table_name INTO last_table
+    FROM information_schema.tables
+    WHERE table_name LIKE 'reductions_%'
+    ORDER BY table_name DESC
+    LIMIT 1;
+
+    RAISE NOTICE 'Vue reductions créée avec : %', last_table;
+
+    EXECUTE format('
+        CREATE OR REPLACE VIEW vue_reductions_clean AS
+        SELECT
+            discount_id,
+            code,
+            value,
+            type,
+            usage_count
+        FROM %I;
+    ', last_table);
+END $$;
+
+
